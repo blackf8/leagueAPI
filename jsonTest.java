@@ -5,6 +5,7 @@ import java.util.*;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.net.*;
 /**
@@ -23,13 +24,18 @@ public class jsonTest{
 		parser(json, dataSaver);
 		String matchHistory = introMatchHistory(consoleReader, dataSaver);
 		consoleReader.close();
-		System.out.println(matchHistory);
+		System.out.println(matchHistory); // This is the match history
+		matchHistoryParser(matchHistory);
+	}
+	public static void matchHistoryParser(String matchHistory) throws JSONException{
+		JSONObject jsonArr = new JSONObject(matchHistory);
+		System.out.println(jsonArr.get("matches"));
 	}
 	/**
 	 * @MethodName : introUrlCreator
 	 * @Details : Gives the user an intro asking for their dev key and player name.
 	 * @param consoleReader : A general scanner to the console
-	 * @return url : The url that will be used to retrieve our data. It has a standard format 
+	 * @return url : The url that will be used to retrieve our data. It has a standard format
 	 * with a spot for the name of the user and a spot for the dev key
 	 */
 	public static String introUrlCreator(Scanner consoleReader, HashMap<String, String> dataSaver) {
@@ -41,7 +47,6 @@ public class jsonTest{
 		dataSaver.put("Player Name", name);
 		while(name.indexOf(" ") != -1) {
 			name = name.substring(0, name.indexOf(" ")) + "%20" + name.substring(name.indexOf(" ") + 1, name.length());
-			System.out.println(name);
 		}
 		//key = "?api_key=RGAPI-11db1a3d-16ff-4461-baec-42ef3ed5ac52";
 		String url = "https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/" + name + "?api_key=" + key;
@@ -99,8 +104,8 @@ public class jsonTest{
 	 * @param json : The string with data on the player.
 	 * @return summonerAccountId : This encrypted account Id can be used to pull up the match history of a player.
 	 */
-	public static void parser(String json, HashMap<String, String> dataSaver) {
-		json = json.substring(1,json.length()-1);
+	public static void parser(String json, HashMap<String, String> dataSaver)throws JSONException{
+		/**json = json.substring(1,json.length()-1);
 		String[] summonerInfo = json.split(",");
 		String summonerId = (summonerInfo[0]).substring(6,summonerInfo[0].length()-1); // id
 		String summonerAccountId = (summonerInfo[1]).substring(13,summonerInfo[1].length()-1); // account ID   this one is important to get match history
@@ -110,6 +115,10 @@ public class jsonTest{
 		String summonerRevisionDate = (summonerInfo[5]).substring(15,summonerInfo[5].length()); // revision data
 		String summonerLevel = (summonerInfo[6]).substring(16,summonerInfo[6].length()); // summoner level
 		dataSaver.put("summonerAccountId", summonerAccountId);
+		**/
+		JSONObject jsonOb = new JSONObject(json);
+		//System.out.println(jsonOb.getString("summonerAccountId"));
+		dataSaver.put("summonerAccountId", jsonOb.getString("accountId"));
 	}
 	/**
 	 * @MethodName : retrieveMatch
