@@ -1,5 +1,3 @@
-package cs12b.mySQL_PA;
-
 import java.io.*;
 import java.util.*;
 
